@@ -1,28 +1,47 @@
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "Equipe")
+@NamedQuery(name = "Equipe.findByEmpresa", query = "SELECT e FROM Equipe e WHERE e.empresaTerceirizada.id = :empresaId")
 public class Equipe {
-    private String codigo;
-    private Terceirizada terceirizadaResponsavel;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_terceirizada_id", nullable = false)
+    private EmpresaTerceirizada empresaTerceirizada;
+
+    @Column(name = "quantidade_funcionarios", nullable = false)
     private int quantidadeFuncionarios;
 
-    public Equipe(String codigo, Terceirizada terceirizadaResponsavel, int quantidadeFuncionarios) {
-        this.codigo = codigo;
-        this.terceirizadaResponsavel = terceirizadaResponsavel;
+
+    public Equipe(Long id, EmpresaTerceirizada empresaTerceirizada, int quantidadeFuncionarios) {
+        this.id = id;
+        this.empresaTerceirizada = empresaTerceirizada;
         this.quantidadeFuncionarios = quantidadeFuncionarios;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public Equipe() {
+
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public Long getId() {
+        return id;
     }
 
-    public Terceirizada getTerceirizadaResponsavel() {
-        return terceirizadaResponsavel;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setTerceirizadaResponsavel(Terceirizada terceirizadaResponsavel) {
-        this.terceirizadaResponsavel = terceirizadaResponsavel;
+    public EmpresaTerceirizada getEmpresaTerceirizada() {
+        return empresaTerceirizada;
+    }
+
+    public void setEmpresaTerceirizada(EmpresaTerceirizada empresaTerceirizada) {
+        this.empresaTerceirizada = empresaTerceirizada;
     }
 
     public int getQuantidadeFuncionarios() {
