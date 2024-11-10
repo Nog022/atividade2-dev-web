@@ -1,10 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "clientes")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_cliente", discriminatorType = DiscriminatorType.STRING)
+@NamedQueries({
+    @NamedQuery(name = "Cliente.findByCPF", query = "SELECT c FROM Cliente c WHERE c.cpf = :cpf"),
+    @NamedQuery(name = "Cliente.findByOS", query = "SELECT c FROM Cliente c JOIN c.ordensDeServico o WHERE o.codigo = :codigoOS")
+})
 public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(nullable = false, unique = true)
     private String cpf;
     private String nome;
     private String endereco;
+    @ManyToMany(mappedBy = "clientesAtendidos")
     private List<OrdemDeServico> ordensDeServico;
 
     public Cliente(String cpf, String nome, String endereco) {
