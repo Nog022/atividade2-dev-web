@@ -2,23 +2,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "clientes")
+@Table(name = "Cliente")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_cliente", discriminatorType = DiscriminatorType.STRING)
-@NamedQueries({
-    @NamedQuery(name = "Cliente.findByCPF", query = "SELECT c FROM Cliente c WHERE c.cpf = :cpf"),
-    @NamedQuery(name = "Cliente.findByOS", query = "SELECT c FROM Cliente c JOIN c.ordensDeServico o WHERE o.codigo = :codigoOS")
+@DiscriminatorColumn(name = "is_vital", discriminatorType = DiscriminatorType.BOOLEAN)
+@DiscriminatorValue("false")
+@NamedQuery(name = "Cliente.findByPriority", query = "SELECT c FROM ClienteVital c WHERE c.codigoPrioridade = :codigoPrioridade")
 })
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(nullable = false, unique = true)
+    @Column(length = 11)
     private String cpf;
+
+    @Column(nullable = false, length = 100)
     private String nome;
+
+    @Column(nullable = false, length = 200)
     private String endereco;
-    @ManyToMany(mappedBy = "clientesAtendidos")
-    private List<OrdemDeServico> ordensDeServico;
+
+    @ManyToOne
+    @JoinColumn(name = "cidade_id", nullable = false)
+    private Cidade cidade;
+
+    @ManyToMany
+    @JoinTable(name = "ClienteOrdemServico",
+            joinColumns = @JoinColumn(name = "cliente_cpf"),
+            inverseJoinColumns = @JoinColumn(name = "ordem_servico_id"))
+    private List<OrdemServico> ordensServico;
 
     public Cliente(String cpf, String nome, String endereco) {
         this.cpf = cpf;
