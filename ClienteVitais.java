@@ -1,6 +1,11 @@
+@Entity
+@DiscriminatorValue("true")
 public class ClienteVitais extends Cliente {
-    private int tempoMaximoSemEnergia;
-    private int codigoPrioridade;
+    @Column(name = "tempo_maximo_sem_energia")
+    private Integer tempoMaximoSemEnergia;
+
+    @Column(name = "codigo_prioridade")
+    private Integer codigoPrioridade;
 
     public ClienteVitais(String cpf, String nome, String endereco, int tempoMaximoSemEnergia, int codigoPrioridade) {
         super(cpf, nome, endereco);
