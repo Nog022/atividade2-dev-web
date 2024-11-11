@@ -1,55 +1,25 @@
-import java.time.LocalDateTime;
-import java.util.List;
+@Entity
+@Table(name = "OrdemServico")
+public class OrdemServico {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-public class OrdemDeServico {
-    private String codigo;
-    private List<Cliente> clientesAtendidos;
-    private LocalDateTime dataHoraAbertura;
-    private LocalDateTime dataHoraEncerramento;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_hora_abertura", nullable = false)
+    private Date dataHoraAbertura;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_hora_encerramento")
+    private Date dataHoraEncerramento;
+
+    @ManyToOne
+    @JoinColumn(name = "equipe_id", nullable = false)
+    private Equipe equipe;
+
+    @Column(name = "codigo_prioridade")
     private Integer codigoPrioridade;
 
-    public OrdemDeServico(String codigo, List<Cliente> clientesAtendidos, LocalDateTime dataHoraAbertura) {
-        this.codigo = codigo;
-        this.clientesAtendidos = clientesAtendidos;
-        this.dataHoraAbertura = dataHoraAbertura;
-        this.dataHoraEncerramento = null;
-        this.codigoPrioridade = calcularPrioridade();
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public List<Cliente> getClientesAtendidos() {
-        return clientesAtendidos;
-    }
-
-    public LocalDateTime getDataHoraAbertura() {
-        return dataHoraAbertura;
-    }
-
-    public LocalDateTime getDataHoraEncerramento() {
-        return dataHoraEncerramento;
-    }
-
-    public void encerrarOrdem(LocalDateTime dataHoraEncerramento) {
-        this.dataHoraEncerramento = dataHoraEncerramento;
-    }
-
-    public Integer getCodigoPrioridade() {
-        return codigoPrioridade;
-    }
-
-    private Integer calcularPrioridade() {
-        for (Cliente cliente : clientesAtendidos) {
-            if (cliente instanceof ClienteVitais) {
-                return ((ClienteVitais) cliente).getCodigoPrioridade();
-            }
-        }
-        return null;  // Sem prioridade específica
-    }
+    @ManyToMany(mappedBy = "ordensServico")
+    private List<Cliente> clientes;
 }
